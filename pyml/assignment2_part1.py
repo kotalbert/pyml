@@ -1,18 +1,20 @@
-""" Assignment 2 solution
+""" 
+Assignment 2
+Part 1 -  Regression
 """
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.preprocessing import PolynomialFeatures as pf
 from sklearn.metrics.regression import r2_score
 
 np.random.seed(0)
 n = 15
-x = np.linspace(0,10,n) + np.random.randn(n)/5
-y = np.sin(x)+x/6 + np.random.randn(n)/10
+x = np.linspace(0,10,n) + np.random.randn(n) / 5
+y = np.sin(x) + x / 6 + np.random.randn(n) / 10
 x = x.reshape(-1,1)
 y = y.reshape(-1,1)
 X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=0)
@@ -28,8 +30,8 @@ def part1_scatter():
     plt.show()
     
     
-# NOTE: Uncomment the function below to visualize the data, but be sure 
-# to **re-comment it before submitting this assignment to the autograder**.   
+# NOTE: Uncomment the function below to visualize the data, but be sure
+# to **re-comment it before submitting this assignment to the autograder**.
 #part1_scatter()
 
 # Question 1
@@ -90,14 +92,9 @@ def fit_models(X_in, y_in):
     Store models with polynomial degree as a list of touples
     """
     regs = []
-    for i in range(1,10):
-        if i==1:
-            reg = LinearRegression().fit(X_in, y_in)
-            
-        else:
-            X_poly = pf(i).fit_transform(X_in)
-            reg = LinearRegression().fit(X_poly, y_in)
-
+    for i in range(0,10):
+        X_poly = pf(i).fit_transform(X_in)
+        reg = LinearRegression().fit(X_poly, y_in)
         regs.append((i,reg))
 
     return regs
@@ -108,13 +105,49 @@ def calc_r2_scores(regs_in, X_in, y_in):
     """
     scores = []
     for i, reg in regs_in:
-        if i == 1:
-            pred = reg.predict(X_in)
-        else:
-            X_poly = pf(i).fit_transform(X_in)
-            pred = reg.predict(X_poly)
-
+        X_poly = pf(i).fit_transform(X_in)
+        pred = reg.predict(X_poly)
         score = r2_score(y_in, pred)
         scores.append(score)
 
     return np.array(scores)
+
+# Question 3
+def answer_three():
+    return (0,9,6)
+
+def plot_r2_scores():
+    """Helper funcion to visualize optimal polynomial degree on training and test data.
+    """
+    scores = answer_two()
+    scores_train = scores[0]
+    scores_test = scores[1]
+    degs = np.arange(0,10,1)
+
+    plt.figure(figsize=(10,5))
+    plt.plot(degs, scores_train, 'o', label='training scores', markersize=8)
+    plt.plot(degs, scores_test, 'o', label='test scores', markersize=8)
+    plt.xticks(degs)
+    plt.legend(loc=0)
+    plt.show()
+
+#plot_r2_scores()
+
+# Question 4
+def answer_four():
+    # Converting train and test features to polynomials
+    X_train_poly = pf(12).fit_transform(X_train)
+    X_test_poly = pf(12).fit_transform(X_test)
+
+    # Training models
+    linreg = LinearRegression().fit(X_train_poly, y_train)
+    lassoreg = Lasso(alpha=0.01, max_iter=1e4).fit(X_train_poly,y_train)
+
+    # Calculating r2 on test sample
+    linreg_test_pred = linreg.predict(X_test_poly)
+    linreg_test_r2 = r2_score(y_test, linreg_test_pred)
+
+    lassoreg_test_pred = lassoreg.predict(X_test_poly)
+    lassoreg_test_r2 = r2_score(y_test, lassoreg_test_pred)
+
+    return (linreg_test_r2, lassoreg_test_r2)

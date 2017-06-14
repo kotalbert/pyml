@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c26643ea-f98d-493e-bcd1-b7f10ca37653</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>assignment2.py</StartupFile>
+    <StartupFile>assignment2_part1.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,11 +22,14 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="assignment2_part2.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test\a1_test.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="assignment1.py" />
-    <Compile Include="assignment2.py">
+    <Compile Include="assignment2_part1.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="assignment3.py">
@@ -40,10 +43,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="data\" />
     <Folder Include="test\" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\mushrooms.csv" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
